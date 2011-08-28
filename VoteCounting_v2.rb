@@ -96,25 +96,12 @@ end
 class ReinitializeServerState < WEBrick::HTTPServlet::AbstractServlet
   
   def do_POST(request, response)
-    status, content_type, body = resetState()
-
-    if (body == "Reinitialized")
-      response.status = status
-      response['Content-Type'] = content_type
-      response.body = body
-    end
-  end
-    
-  def resetState()
-    vd = request.query['vd'] if request.query['vd']
-    
-    state = ''
-    if (vd == 'reset')
-      $memberhash = Hash.new()
-      $candidatehash = Hash.new()
-      state = "Reinitialized"
-    end
-    return 200, "text/plain", state
+    $memberhash = Hash.new()
+    $candidatehash = Hash.new()
+      
+    response.status = 200
+    response['Content-Type'] = "text/plain"
+    response.body = "Reset"
   end
 end
 
