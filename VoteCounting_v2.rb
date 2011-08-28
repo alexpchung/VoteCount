@@ -24,7 +24,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     if (body == 'OK')
       response.status = status
       response['Content-Type'] = content_type
-      response.body = body
+      response.body = body + ". Thanks for registering to vote."
     end
   end
   
@@ -35,7 +35,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     if ($candidatehash.empty? && $memberhash[agent_name] == nil) #no more members may be added once voting has begun; Check if the member has registered before
       #accept new member
       $memberhash[agent_name] = 'not voted'
-      msg = "OK. Thanks for registering to vote."
+      msg = "OK"
     end
     
     return 200, "text/plain", msg
@@ -50,7 +50,7 @@ class Vote < WEBrick::HTTPServlet::AbstractServlet
     if (body == "OK")
       response.status = status
       response['Content-Type'] = content_type
-      response.body = body
+      response.body = body + ". You vote has been registered."
     end
   end
   
@@ -63,7 +63,7 @@ class Vote < WEBrick::HTTPServlet::AbstractServlet
       $candidatehash[vote_name] = 0 if $candidatehash[vote_name] == nil
       $candidatehash[vote_name] += 1
       $memberhash[agent_name] = 'voted'
-      msg = "OK.  You vote has been registered."
+      msg = "OK"
     end
     
     return 200, "text/plain", msg
