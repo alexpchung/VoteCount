@@ -112,7 +112,7 @@ class ReinitializeServerState < WEBrick::HTTPServlet::AbstractServlet
     if (vd == 'reset')
       $memberhash = Hash.new()
       $candidatehash = Hash.new()
-      status = "Reinitialized"
+      state = "Reinitialized"
     end
     return 200, "text/plain", state
   end
