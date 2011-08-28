@@ -9,8 +9,9 @@ __can_anonymously_use_as_example = True
 
 CS194-017 Entrance Exercise
 """
-
+require 'rubygems'
 require 'webrick'
+include WEBrick
 
 $memberhash = Hash.new() #Hash of registered member agents.
 $candidatehash = Hash.new() #Hash of members who received votes.
@@ -23,7 +24,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     if (body == 'OK')
       response.status = status
       response['Content-Type'] = content_type
-      response.body = body + "\n"
+      response.body = body
     end
   end
   
@@ -34,7 +35,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     if ($candidatehash.empty? && $memberhash[agent_name] == nil) #no more members may be added once voting has begun; Check if the member has registered before
       #accept new member
       $memberhash[agent_name] = 'not voted'
-      msg = "OK"
+      msg = "OK. Thanks for registering to vote."
     end
     
     return 200, "text/plain", msg
@@ -49,7 +50,7 @@ class Vote < WEBrick::HTTPServlet::AbstractServlet
     if (body == "OK")
       response.status = status
       response['Content-Type'] = content_type
-      response.body = body + "\n"
+      response.body = body
     end
   end
   
@@ -62,7 +63,7 @@ class Vote < WEBrick::HTTPServlet::AbstractServlet
       $candidatehash[vote_name] = 0 if $candidatehash[vote_name] == nil
       $candidatehash[vote_name] += 1
       $memberhash[agent_name] = 'voted'
-      msg = "OK"
+      msg = "OK.  You vote has been registered."
     end
     
     return 200, "text/plain", msg
@@ -76,7 +77,7 @@ class Victor < WEBrick::HTTPServlet::AbstractServlet
 
     response.status = status
     response['Content-Type'] = content_type
-    response.body = body + "\n"
+    response.body = body
   end
 
   def checkVictor()
@@ -95,8 +96,12 @@ end
 class ReinitializeServerState < WEBrick::HTTPServlet::AbstractServlet
   
   def do_POST(request, response)
-    $memberhash = nil
-    $candidatehash = nil
+    $memberhash = Hash.new()
+    $candidatehash = Hash.new()
+    
+    response.status = 200
+    response['Content-Type'] = "text/plain"
+    response.body = "Reinitialized"
   end
 end
 
