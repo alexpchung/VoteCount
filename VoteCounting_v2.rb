@@ -24,7 +24,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     if (body == 'OK')
       response.status = status
       response['Content-Type'] = content_type
-      response.body = body + ". Thanks for registering to vote."
+      response.body = body
     end
   end
   
@@ -96,12 +96,25 @@ end
 class ReinitializeServerState < WEBrick::HTTPServlet::AbstractServlet
   
   def do_POST(request, response)
-    $memberhash = Hash.new()
-    $candidatehash = Hash.new()
+    status, content_type, body = resetState()
+
+    if (body == "Reinitialized")
+      response.status = status
+      response['Content-Type'] = content_type
+      response.body = body
+    end
+  end
     
-    response.status = 200
-    response['Content-Type'] = "text/plain"
-    response.body = "Reinitialized"
+  def resetState()
+    vd = request.query['vd'] if request.query['vd']
+    
+    state = ''
+    if (vd == 'reset')
+      $memberhash = Hash.new()
+      $candidatehash = Hash.new()
+      status = "Reinitialized"
+    end
+    return 200, "text/plain", state
   end
 end
 
