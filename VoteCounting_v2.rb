@@ -31,7 +31,7 @@ class Member < WEBrick::HTTPServlet::AbstractServlet
     agent_name = request.query['agent'] if request.query['agent']
     msg = ""
     
-    if ($candidatehash.length == 0 && $memberhash[agent_name] == nil) #no more members may be added once voting has begun; Check if the member has registered before
+    if ($candidatehash.empty? && $memberhash[agent_name] == nil) #no more members may be added once voting has begun; Check if the member has registered before
       #accept new member
       $memberhash[agent_name] = 'not voted'
       msg = "OK"
@@ -58,7 +58,7 @@ class Vote < WEBrick::HTTPServlet::AbstractServlet
     vote_name = request.query['vote'] if request.query['vote']
     msg = ""
     
-    if ($memberhash[agent_name] != nil && $memberhash[agent_name] != 'voted')
+    if ($memberhash[agent_name] != nil && $memberhash[agent_name] == "not voted")
       $candidatehash[vote_name] = 0 if $candidatehash[vote_name] == nil
       $candidatehash[vote_name] += 1
       $memberhash[agent_name] = 'voted'
@@ -81,7 +81,7 @@ class Victor < WEBrick::HTTPServlet::AbstractServlet
 
   def checkVictor()
     result = "UNKNOWN"
-    if ($candidatehash != nil && $candidatehash.length > 0)
+    if ($candidatehash.any?)
       member_total = $memberhash.length
       victor_name, vote_num =  $candidatehash.find {|key, value| value > (member_total / 2)}
       if (victor_name != nil)
